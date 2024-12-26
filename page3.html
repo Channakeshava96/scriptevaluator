@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evaluation Results</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Feedback Styles */
+    .feedback {
+      margin: 20px 0;
+      padding: 15px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 8px;
+    }
+
+    .feedback.excellent {
+      background-color: #4caf50;
+      color: white;
+    }
+
+    .feedback.good {
+      background-color: #ffeb3b;
+      color: black;
+    }
+
+    .feedback.average {
+      background-color: #f44336;
+      color: white;
+    }
+
+    /* Bar Styles */
+    .bar {
+      transition: width 1s ease-in-out;
+      height: 20px;
+      color: white;
+      text-align: center;
+      border-radius: 5px;
+      margin: 10px 0;
+    }
+
+    .bar.coherence {
+      background-color: #4caf50;
+    }
+
+    .bar.accuracy {
+      background-color: #2196f3;
+    }
+
+    .bar.grammar {
+      background-color: #ff9800;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+      body {
+        font-size: 14px;
+      }
+
+      header {
+        padding: 15px;
+      }
+
+      nav a {
+        font-size: 14px;
+        margin: 5px;
+      }
+
+      .charts {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .chart-box {
+        width: 90%;
+        margin-bottom: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        font-size: 12px;
+      }
+
+      header h1 {
+        font-size: 18px;
+      }
+
+      .chart-box {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Answer Script Evaluation Results</h1>
+    <nav>
+      <a href="index.html">Back to Introduction</a>
+      <a href="page2.html">Back to Upload</a>
+    </nav>
+  </header>
+
+  <section class="evaluation-results">
+    <h2>Evaluation Complete</h2>
+    <p>Your answer script has been successfully evaluated. Below are the results:</p>
+
+    <div class="results">
+      <h3>Overall Score: <span id="overall-score">85/100</span></h3>
+      <div id="feedback" class="feedback"></div>
+
+      <div class="report-card">
+        <h4>Performance Breakdown:</h4>
+        <ul>
+          <li>Coherence: <span id="coherence-score">90%</span></li>
+          <li>Accuracy: <span id="accuracy-score">80%</span></li>
+          <li>Grammar: <span id="grammar-score">85%</span></li>
+        </ul>
+      </div>
+
+      <div class="charts">
+        <div class="chart-box">
+          <h4>Coherence Score</h4>
+          <div class="bar coherence" id="coherence-bar" style="width: 90%;">90%</div>
+        </div>
+        <div class="chart-box">
+          <h4>Accuracy Score</h4>
+          <div class="bar accuracy" id="accuracy-bar" style="width: 80%;">80%</div>
+        </div>
+        <div class="chart-box">
+          <h4>Grammar Score</h4>
+          <div class="bar grammar" id="grammar-bar" style="width: 85%;">85%</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Dynamically analyze and display feedback
+    const overallScore = 70; // Example score fetched from backend
+    document.getElementById("overall-score").innerHTML=overallScore;
+    const feedbackElement = document.getElementById('feedback');
+    if (overallScore >= 85) {
+      feedbackElement.textContent = 'Excellent Performance!';
+      feedbackElement.classList.add('excellent');
+    } else if (overallScore >= 70) {
+      feedbackElement.textContent = 'Good Performance!';
+      feedbackElement.classList.add('good');
+    } else {
+      feedbackElement.textContent = 'Average Performance.';
+      feedbackElement.classList.add('average');
+    }
+  </script>
+</body>
+
+</html>
