@@ -272,7 +272,7 @@ body {
 }
 
 .hero button:hover {
-  background: #e0a800;
+  background: #bea661;
 }
 
 /* Section Styles */
@@ -345,7 +345,7 @@ button:disabled {
 }
 
 button:hover:not(:disabled) {
-  background-color: #003399;
+  background-color: #edf822;
 }
 
 /* Evaluation Results */
