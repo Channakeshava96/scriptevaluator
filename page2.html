@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Upload Answer Script</title>
+  <title>Upload Files</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -16,114 +16,128 @@
     </nav>
   </header>
 
-<section class="upload-section">
-  <h2>Upload Answer Script</h2>
-  <p>Drag and drop your answer script below or click to select a file.</p>
+  <section class="upload-section">
+    <h2>Upload Answer Script</h2>
+    <p>Drag and drop your answer script below or click to select a file.</p>
 
-  <div class="drop-area" id="drop-area">
-    <p>Drag and drop your file here or click to select</p>
-    <input type="file" id="fileInput" class="file-input" accept=".pdf, .jpg, .jpeg, .png" />
-  </div>
+    <div class="drop-area" id="answer-drop-area">
+      <p>Drag and drop your answer script here or click to select</p>
+      <input type="file" id="answerFileInput" class="file-input" accept=".pdf, .jpg, .jpeg, .png" />
+    </div>
 
-  <!-- Preview Area -->
-  <div id="previews" class="previews">
-    <p>No file selected</p>
-  </div>
+    <h2>Upload Rubrics</h2>
+    <p>Drag and drop your rubrics file below or click to select a file.</p>
 
-  <button id="uploadButton" disabled>Upload Answer Script</button>
-</section>
+    <div class="drop-area" id="rubrics-drop-area">
+      <p>Drag and drop your rubrics file here or click to select</p>
+      <input type="file" id="rubricsFileInput" class="file-input" accept=".pdf, .jpg, .jpeg, .png" />
+    </div>
 
+    <button id="uploadBothButton" disabled>Upload Files</button>
+  </section>
 
-<script>
-  const dropArea = document.getElementById("drop-area");
-  const fileInput = document.getElementById("fileInput");
-  const uploadButton = document.getElementById("uploadButton");
-  const preview = document.createElement("div"); // Create a preview container
-  preview.id = "preview";
-  dropArea.appendChild(preview); // Append preview area to dropArea
+  <script>
+    const answerDropArea = document.getElementById("answer-drop-area");
+    const rubricsDropArea = document.getElementById("rubrics-drop-area");
+    const answerFileInput = document.getElementById("answerFileInput");
+    const rubricsFileInput = document.getElementById("rubricsFileInput");
+    const uploadBothButton = document.getElementById("uploadBothButton");
 
-  // Initialize preview with "No file selected"
-  updatePreview();
+    let isAnswerUploaded = false;
+    let isRubricsUploaded = false;
 
-  // Drag over and drop events
-  dropArea.addEventListener("dragover", (event) => {
-    event.preventDefault();
-    dropArea.style.backgroundColor = "#e0e0e0";
-    document.getElementById("previews").innerHTML="file selected";
-  });
+    // Common Drag and Drop Handlers
+    function setupDragAndDrop(dropArea, fileInput, fileType) {
+      dropArea.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        dropArea.style.backgroundColor = "#e0e0e0";
+      });
 
-  dropArea.addEventListener("dragleave", () => {
-    dropArea.style.backgroundColor = "#f4f4f4";
-    document.getElementById("previews").innerHTML="file selected";
-  });
+      dropArea.addEventListener("dragleave", () => {
+        dropArea.style.backgroundColor = "#f4f4f4";
+      });
 
-  dropArea.addEventListener("drop", (event) => {
-    event.preventDefault();
-    dropArea.style.backgroundColor = "#f4f4f4";
-    const file = event.dataTransfer.files[0];
-    fileInput.files = event.dataTransfer.files;
-    handleFileSelection(file);
-    document.getElementById("previews").innerHTML="file selected";
-  });
+      dropArea.addEventListener("drop", (event) => {
+        event.preventDefault();
+        dropArea.style.backgroundColor = "#f4f4f4";
+        const file = event.dataTransfer.files[0];
+        fileInput.files = event.dataTransfer.files;
+        handleFileSelection(file, fileType);
+      });
 
-  // File input change
-  fileInput.addEventListener("change", () => {
-    const file = fileInput.files[0];
-    handleFileSelection(file);
-  });
+      dropArea.addEventListener("click", () => {
+        fileInput.click();
+      });
 
-  // Handle file selection
-  function handleFileSelection(file) {
-    if (file) {
-      // Enable the upload button
-      uploadButton.disabled = false;
-
-      // Display file preview (name and size)
-      const fileSize = (file.size / 1024).toFixed(2) + " KB"; // Convert size to KB
-      preview.innerHTML = `<p>Selected File: <strong>${file.name}</strong> (${fileSize})</p>`;
-      document.getElementById("previews").innerHTML="file selected";
-      console.log("File selected:", file.name);
-    } else {
-      // Disable the upload button
-      uploadButton.disabled = true;
-      updatePreview();
+      fileInput.addEventListener("change", () => {
+        const file = fileInput.files[0];
+        handleFileSelection(file, fileType);
+      });
     }
-  }
 
-  // Upload button functionality
-  uploadButton.addEventListener("click", () => {
-    const file = fileInput.files[0];
-    if (file) {
-      console.log("File uploaded:", file.name);
-      window.alert("File uploaded successfully!");
-      
-      // Reset the interface after upload
-      resetInterface();
-    } else {
-      window.alert("Please select a file before uploading.");
+    function handleFileSelection(file, fileType) {
+      if (file) {
+        const fileName = file.name;
+        const fileSize = (file.size / 1024).toFixed(2) + " KB";
+        console.log(`${fileType} selected:`, fileName);
+
+        if (fileType === "Answer") {
+          isAnswerUploaded = true;
+          answerDropArea.innerHTML = `<p>Selected Answer Script: <strong>${fileName}</strong> (${fileSize})</p>`;
+        } else if (fileType === "Rubrics") {
+          isRubricsUploaded = true;
+          rubricsDropArea.innerHTML = `<p>Selected Rubrics: <strong>${fileName}</strong> (${fileSize})</p>`;
+        }
+
+        // Enable upload button only if both files are selected
+        uploadBothButton.disabled = !(isAnswerUploaded && isRubricsUploaded);
+      }
     }
+
+    // Upload Both Button Click Event
+    uploadBothButton.addEventListener("click", () => {
+      if (!isAnswerUploaded || !isRubricsUploaded) {
+        alert("Please upload both the Answer Script and Rubrics files.");
+        return;
+      }
+
+      const answerFile = answerFileInput.files[0];
+      const rubricsFile = rubricsFileInput.files[0];
+
+      // Simulate sending files to the backend
+      uploadFilesToBackend(answerFile, rubricsFile);
+    });
+
+    function uploadFilesToBackend(answerFile, rubricsFile) {
+      const formData = new FormData();
+      formData.append("answerScript", answerFile);
+      formData.append("rubrics", rubricsFile);
+
+      fetch("http://localhost:3000/upload-both", {
+        method: "POST",
+        body: formData,
+      })
+      .then((response) => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  })
+  .then((data) => {
+    console.log("Files uploaded successfully:", data);
+    alert("Files uploaded successfully!");
+  })
+  .catch((error) => {
+    console.error("Error during file upload:", error);
+    alert("Error uploading files.");
   });
+    }
 
-  // Reset interface to the initial state
-  function resetInterface() {
-    fileInput.value = ""; // Clear the file input
-    uploadButton.disabled = true; // Disable the upload button
-    updatePreview(); // Reset the preview
-    document.getElementById("previews").innerHTML="No file selected";
-  }
-
-  // Update preview with "No file selected" message
-  function updatePreview() {
-    preview.innerHTML = "<p>No file selected</p>";
-  }
-
-  // Allow clicking on the drop area to open the file dialog
-  dropArea.addEventListener("click", () => {
-    fileInput.click();
-  });
-</script>
-
-  
+    // Initialize Drag and Drop Areas
+    setupDragAndDrop(answerDropArea, answerFileInput, "Answer");
+    setupDragAndDrop(rubricsDropArea, rubricsFileInput, "Rubrics");
+  </script>
+  <script src="server.js"></script>
 </body>
 
 </html>
